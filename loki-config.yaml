@@ -1,6 +1,11 @@
 ---
 server:
   http_listen_port: 3100
+  grpc_server_max_concurrent_streams: 2000
+  http_server_write_timeout: 120s
+  http_server_read_timeout: 120s
+  http_server_idle_timeout: 120s
+  grpc_server_keepalive_timeout: 30s
 memberlist:
   join_members:
     - loki:7946
@@ -11,8 +16,12 @@ schema_config:
       object_store: s3
       schema: v11
       index:
-        prefix: index_
+        prefix: loki_index_
         period: 24h
+      chunks:
+        prefix: loki_chunks_
+        period: 24h
+      row_shards: 16
 common:
   path_prefix: /loki
   replication_factor: 1
@@ -31,3 +40,15 @@ ruler:
   storage:
     s3:
       bucketnames: loki-ruler
+ingester:
+  chunk_encoding: snappy
+  chunk_block_size: 262144    ## 256KB uncompress size
+  chunk_idle_period: 15m      # Any chunk not receiving new logs in this time will be flushed
+  max_chunk_age: 12h          # All chunks will be flushed when they hit this age, default is 1h
+  chunk_target_size: 3145728  # Loki will attempt to build chunks up to 3MB, flushing first if chunk_idle_period or max_chunk_age is reached first
+  chunk_retain_period: 30s    # Must be greater than index read cache TTL if using an index cache (Default index read cache TTL is 5m)
+  max_transfer_retries: 0     # Chunk transfers disabled
+  concurrent_flushes: 16
+  flush_op_timeout: 10m
+  autoforget_unhealthy: true
+  flush_check_period: 15s
