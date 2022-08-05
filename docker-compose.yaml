@@ -164,6 +164,6 @@ services:
 
   flog:
     image: mingrammer/flog
-    command: -f json -d 1s -l
+    command: -f json -d 1s -b 1073741824 -p 52428800
     networks:
       - loki
