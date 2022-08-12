@@ -5,7 +5,7 @@ networks:
   loki:
 
 services:
-  read:
+  loki-read:
     image: grafana/loki:2.5.0
     command: "-config.file=/etc/loki/config.yaml -target=read"
     ports:
@@ -21,7 +21,7 @@ services:
         aliases:
           - loki
 
-  write:
+  loki-write:
     image: grafana/loki:2.5.0
     command: "-config.file=/etc/loki/config.yaml -target=write"
     ports:
