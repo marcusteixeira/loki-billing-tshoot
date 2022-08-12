@@ -40,6 +40,7 @@ services:
     volumes:
       - ./promtail-local-config.yaml:/etc/promtail/config.yaml
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./loki/:/var/log/
     command: -config.file=/etc/promtail/config.yaml
     ports:
       - "9080:9080"
