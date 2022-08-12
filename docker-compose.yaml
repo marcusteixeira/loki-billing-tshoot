@@ -103,8 +103,8 @@ services:
   gateway:
     image: nginx:latest
     depends_on:
-      - read
-      - write
+      - loki-read
+      - loki-write
     entrypoint:
       - sh
       - -euc
