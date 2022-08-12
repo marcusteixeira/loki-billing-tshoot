@@ -38,9 +38,11 @@ services:
   promtail:
     image: grafana/promtail:2.5.0
     volumes:
-      - ./promtail-local-config.yaml:/etc/promtail/config.yaml:ro
+      - ./promtail-local-config.yaml:/etc/promtail/config.yaml
       - /var/run/docker.sock:/var/run/docker.sock
     command: -config.file=/etc/promtail/config.yaml
+    ports:
+      - "9080:9080"
     depends_on:
       - gateway
     networks:
@@ -164,11 +166,8 @@ services:
 
   flog:
     image: mingrammer/flog
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://localhost:3100/loki/api/v1/push"
-        loki-external-labels: "job=flog"
-    command: -f json -d 1s -b 1073741824 -p 52428800
+    command: f json -d 1s -b 1073741824 -p 52428800 -o /var/log/generated-logs.txt -w
+    volumes:
+      - ./loki/:/var/log/
     networks:
       - loki
