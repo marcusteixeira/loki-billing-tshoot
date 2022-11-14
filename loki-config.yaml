@@ -29,6 +29,17 @@ schema_config:
         prefix: loki_chunks_
         period: 24h
       row_shards: 16
+    - from: 2022-11-15
+      store: boltdb-shipper
+      object_store: tsdb
+      schema: v12
+      index:
+        prefix: loki_index_
+        period: 24h
+      chunks:
+        prefix: loki_chunks_
+        period: 24h
+      row_shards: 16
 common:
   path_prefix: /loki
   replication_factor: 1
@@ -59,3 +70,6 @@ ingester:
   flush_op_timeout: 10m
   autoforget_unhealthy: true
   flush_check_period: 15s
+
+frontend_worker:
+    match_max_concurrent: true # force alignment with querier max concurrency (this should always be true and isn't specific to TSDB)
