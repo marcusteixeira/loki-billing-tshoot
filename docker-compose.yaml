@@ -36,7 +36,7 @@ services:
       <<: *loki-dns
 
   promtail:
-    image: grafana/promtail:2.8.0
+    image: grafana/promtail:3.2.1
     volumes:
       - ./promtail-local-config.yaml:/etc/promtail/config.yaml
       - /var/run/docker.sock:/var/run/docker.sock
